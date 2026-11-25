@@ -1,0 +1,15 @@
+# Baysöz Labs <baysozlabs@proton.me> — baysoz-profilediff ignore rules
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.semgrep/
+build/
+dist/
+*.egg-info/
+.coverage
+coverage.xml
+*.sarif
+*.pb.gz
+profilediff-policy.json

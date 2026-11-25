@@ -1,0 +1,38 @@
+# Baysöz Labs <baysozlabs@proton.me> — continuous quality gates
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86
+        with:
+          python-version: "3.13"
+      - name: Create environment
+        run: uv venv
+      - name: Install project and tools
+        run: |
+          uv pip install -e .
+          uv pip install pytest ruff semgrep
+      - name: Tests
+        run: uv run pytest -q
+      - name: Static analysis
+        run: uv run ruff check --select E,F,W,S,B .
+      - name: Security analysis
+        run: uv run semgrep --config p/default --error .
+      - name: CLI smoke check
+        run: |
+          uv run profilediff --version
+          uv run profilediff --help
